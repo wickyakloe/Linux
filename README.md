@@ -1,11 +1,5 @@
 # Linux
 
-List items in directory:
-
-```shell
-ls
-```
-
 Virtual consoles aka tty:
 
 In shell:
@@ -60,6 +54,92 @@ $systemctl set-default graphical.target
 $systemctl set-default multi-user.target
 ```
 
+Open sub/new shell (Parent-child):
+
+```shell
+$bash
+
+//set shell behaviour see "help set"
+$help set
+$set
+
+```
+
+Run script:
+
+```shell
+//In current shell
+$.[scriptname.ext]
+or
+$source [scriptname.ext]
+
+//In subshell after execution returns
+to Parent shell
+$bash [scriptname.ext]
+
+//In specific situation run from memory
+$exec [scriptname.ext]
+```
+
+Directory browsing:
+
+```shell
+//Show files in directory
+$ls
+README.md
+
+//Show directory your in
+$pwd
+/home/wickedPy/Development/Linux
+```
+
+Show information on computer:
+
+```shell
+$uname
+Linux
+
+//show all
+$uname -a
+
+//show versionno. current kernel
+$uname -r
+```
+
+Bash-history:
+
+The shell saves typed commands in a file called ***.bash_history***
+
+Access history:
+
+```shell
+//Show history
+$history
+
+//Clear history
+$history -c
+```
+
+- Use the arrow keys up and down on the keyboard.
+
+- Use Ctrl+R and type a part of the command
+(this searches backwards in history) pressing again will search further on the same input
+
+- Search number in history and use followed by **!**
+
+```shell
+$!17
+```
+
+- Use **!** followed by begin of command
+(dangerous command gets executed right away without confirmation)
+
+```shell
+$!unam
+uname -r
+4.18.0-18-generic
+```
+
 ## User Accounts
 
 There are 2 types of users accounts in Linux
@@ -89,9 +169,9 @@ $sudo passwd root
 
 ## Shell Variables
 
-Standard variables definied at start are known as the <b>environment</b>
+Standard variables definied at start are known as the **environment**
 
-Show <b>environment</b> variables:
+Show **environment** variables:
 
 ```shell
 $env
@@ -109,11 +189,39 @@ $echo $PATH
 Create variable:
 
 ```shell
-$[VARIABLENAME] = [VALUE]
+$[VARIABLENAME] = [value]
 
 i.e.
-$TODAY = monday
+$TODAY=monday
 ```
+
+Set variable to no value:
+
+```shell
+//using unset
+$unset TODAY
+
+//using variable
+$TODAY=
+```
+
+Self set variables are not automatically available
+in subshells, to make it available in a subshell use:
+
+```shell
+$export [VARIABLENAME] = [value]
+
+i.e.
+$export TODAY = monday
+```
+
+## Streams, pipes and redirects
+
+- ***STDIN***: standard input - the input delivered to a command, mostly input from the keyboard. Also known as ***file descriptor 0***
+
+- ***STDOUT***: standard output - the destination the command sends his output, mostly the window where the command is run. Also known as ***file descriptor 1***
+
+- ***STDERR***: standard error - the desination where errors are sent, mostly the window where the command is run. Also know as ***file descriptor 2***
 
 ## Files
 
