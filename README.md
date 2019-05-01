@@ -81,6 +81,15 @@ $bash [scriptname.ext]
 $exec [scriptname.ext]
 ```
 
+Filter:
+
+```shell
+$grep
+
+//pause output
+$ls | less
+```
+
 Directory browsing:
 
 ```shell
@@ -91,6 +100,18 @@ README.md
 //Show directory your in
 $pwd
 /home/wickedPy/Development/Linux
+
+//make directory/file
+$mkdir /foldername
+
+//remove directory/file
+$rm -r /foldername
+```
+
+Make a file:
+
+```shell
+$touch [filename.ext]
 ```
 
 Show information on computer:
@@ -223,10 +244,225 @@ $export TODAY = monday
 
 - ***STDERR***: standard error - the desination where errors are sent, mostly the window where the command is run. Also know as ***file descriptor 2***
 
-## Files
-
-Make a file:
+U can send the STDIN, STDOUT and STDERR somewhere else aka ***redirect***:
 
 ```shell
-$touch [filename.ext]
+//redirect STDIN i.e. use contents of file as input of a command
+$ <
+
+//redirect STDOUT i.e. send output of command to file.
+//The use of a single > creates a new file or overwrites it.
+$ >
+//Use >> to add to file
+$ >>
+
+//i.e. write output and errors to file wickedtest
+$grep root /etc/* > ~/wickedtest
+
+//redirect STDERR i.e. send error output to file
+$ 2>
+
+//i.e. search for root in /etc/* and send all errors to null device shows only STDOUT
+$grep root /etc/* 2> /dev/null
+
+//i.e. search for root in /etc/* and send all errors to a file wickedtest and show only STDOUT
+$grep root /etc/* 2> ~/wickedtest
+
+//i.e. search for root in /etc/* and send all errors to null device and send output STDOUT to file
+$grep root /etc/* 2> /dev/null > ~/wickedtest
+
+//Use 2>&1 to tell that STDERR must be used just like STDOUT
 ```
+
+Pipes:
+
+Use pipe to send the ouput of the first command to the input of the second command
+
+```shell
+$ls /etc/ | grep hosts
+
+//use row for row from ouput as command for second input
+$ls /etc/ | xargs grep hosts
+
+//or split output i.e. write to file
+and filter
+$ls /etc/ | tee ~/file | grep host
+```
+
+## Processes
+
+Show all active processes:
+
+```shell
+$ps aux
+
+//filter out specific process
+$ps aux | grep bash
+```
+
+## Using Help
+
+Using man aka System Programmers Manual opens in less pager:
+
+```shell
+$man passwd
+
+//show description of manpages 1-9
+$man 3 intro
+
+//show all information
+$man -a passwd
+
+//search command in man
+$man -k time
+
+//filter on section 1
+$man -k time | grep 1
+```
+
+Sometime information is in info:
+
+```shell
+$info ls
+```
+
+## Working with text files
+
+use cat, head, tail to show contents of file streamed:
+
+use command wc - wordcount to count rows, words, chars
+use command nl - to show linenumbers
+use command cut -d : -f 1 to use delimiter and show field
+use command sort to sort on ascii use sort -f to sort alphabetical use sort -n to sort on number.
+
+```shell
+//shows all contents of files
+$cat filename.txt
+
+//shows the first 10 rows of file
+$head filename.txt
+
+//shows the last 10 rows of file
+$tail filename.txt
+
+//use tail with option -f to stream, so if new line is added show this immediatly
+$tail -f filename.txt
+```
+
+vi to open files - standard starts up in command mode:
+
+```shell
+$vi
+```
+
+Essential commands:
+i - open insert mode at cursor position
+o - go to insert mode and open a new line under the current cursor position
+Esc - go back from insert mode to command mode
+:wq! - save all changes and close file
+:q! : close vi without saving curent changes.
+
+Cursormovement in vi:
+
+gg - go to begining in document
+G - go to last line in document
+:3 - go to the line number
+/word - go to the first word in the document after the current cursor position
+n - repeat last search
+?woord - search from current cursor position to top in document for the "woord"
+N - repeast last search reversed
+
+If the arrow keys do not work u can use:
+
+h - move cursor left
+j - move cursor down
+k - move cursor right
+l - move cursor up
+
+Copy, cut and paste in vi:
+
+use command v followed by:
+
+d - delete current selection
+y - copy current selectoin
+p - paste the last text selection from buffer
+dd - delete the current line
+yy - copy the current line
+v - turn block selection on, move arrow keys to select a text block
+x - delete the char at cursor location
+
+Advanced vi options:
+
+u - undo last edit
+Ctrl+R - redo last edit
+:%s/old/new/g - find and replace the text "old" by the text "new"
+
+Split and Join:
+
+split used to split files
+join used to join files not icw split
+
+```shell
+//use command to create exmample file
+of 1Megabyte and 6 blocks total 6 MB
+$dd if=/dev/zero of=~/bigfile bs=1M count=6
+
+//use split on file and generate piecies of 100kb
+$split -b 100K bigfile peices
+
+//merge files together again
+$for i in stukjes*; do cat $i >> merged; done
+```
+
+## Regular Expressions
+
+Always use escape by usinging single quotes
+i.e.
+$grep 'e\{2\}' file
+
+- ^n - only shows rows begining with "n"
+- n$ - only shows rows eding with "n"
+- n.x - The dot is used as a matched for a - random char i.e. nix, nax will give a match
+- the + - tells that the previous char must be found once
+- the * - tells that the previous char can be found multiple times
+- \b - search end of word i.e. '/lea\b' will match on lea but not on leanne
+- ? - used to tell that at the current position a one char may used but not a must.
+- n\{3\} - search for the letter n wich is 3 times findable
+- [a-Z] or [:alpha:] - find random chars from range a-Z ( all small and upper case )
+- !^a-Z - search for patern where no letters are found.
+- \ - search for .\ dot
+- [:digit:] - search for random number
+
+Regular expression tools:
+
+- grep is General Regular Expression Parser use option -E for extended regex and use option -F for paterns.
+- sed
+- awk
+
+Expand, unexpand, fmt, od, paste, pr, tr, uniq:
+
+uniq - check for unique values / show differences:
+
+```shell
+//shows unique values only
+$uniq file
+
+//show duplicate values only
+$uniq --repeated filename
+```
+
+tr - used to replace chars or change into something else used wit pipe or redirect only
+
+```shell
+//change to uppercase
+$cat users | tr a-z A-ZS
+```
+
+- expand - convert tabs to spaces
+- unexpand - convert spaces to tabs
+- fmt - show files in the most optimal view on screen
+- od - dump the contents in octal form
+- paste - shows rows behind each other on screen use option -d to use delimiter for rows
+- pr - converts texttfiles so that they can printed in the most optimal way
+
+## Execute filemanagement tasks
