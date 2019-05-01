@@ -161,6 +161,8 @@ uname -r
 4.18.0-18-generic
 ```
 
+! note extension do not play a role in Linux
+
 ## User Accounts
 
 There are 2 types of users accounts in Linux
@@ -466,3 +468,274 @@ $cat users | tr a-z A-ZS
 - pr - converts texttfiles so that they can printed in the most optimal way
 
 ## Execute filemanagement tasks
+
+using ls to show list dir/folders/files:
+
+```shell
+//Using ls to list files and folders
+$ls
+
+//also show hidden folders
+$ls -a
+
+//show in long list
+$ls -l
+
+//show directory info instead of content in dir
+$ls -d
+i.e.
+$ls -ld [dir]
+
+//sort by modifiation time
+$ls -t
+```
+
+Making/Removing directorys:
+
+Making dir:
+
+```shell
+//will not work because dir bestanden does not exist
+$mkdir bestanden/2019
+
+//will work with option -p , creates whole directory
+$mkdir -p bestanden/2019
+```
+
+Removing dir:
+
+```shell
+//this will not work if there are still contents
+$rmdir bestanden
+
+//this will remove no mather if there is content or not use with option -f for no confirmation
+$rm -r bestanden
+```
+
+Copy, remove and move:
+
+- cp - is copy
+- rm - is remove
+- mv - is move and rename
+
+```shell
+//using option -R will copy whole dir structure
+$cp -R
+
+//using option -f will copy over all properties of files
+$cp -p
+
+//using option -u will copy only if source file is newer then dest file will prevent accidental overwrite i..e
+$cp -u
+
+//copies everything starting with abc to bestanden
+$cp /etc/[abc]* bestanden
+
+//file globbing with * , ? , [at]
+$ls bestan[dt]
+bestand
+bestant
+
+//Shows all except hidden
+$ls *
+
+```
+
+Copying whole devices using dd
+i.e. clone hd, makge image file
+
+commonly used device names:
+
+- /dev/sda - first hd (SCSI or SATA interface)
+- /dev/sdb - second hd (SCSI or SATA interface)
+- /dev/hda - IDE hd ( only old pc's)
+- /dev/cdrom - the optical drive
+- /dev/zero - special internal device used as input device to generate zero's, hany for deleting hd i.e.
+- /dev/null - special internal device used as output device where u can send things to u never want to see back.
+- /dev/ramdon - special internal device used as input device to copy random chars from
+
+```shell
+//input device output device, one should be a device
+$dd if=/dev/cdrom of=~/cdrom.iso
+
+//use with option bs=4096 i.e. to specify block size 4096 bytes
+$dd if=/dev/sda of =/dev/sdb bs=4096
+```
+
+Using file:
+
+- file - the file command shows what type/kind some file is.
+
+```shell
+$file [filename]
+```
+
+Archive files and compression: tar cpio, gzip, gunzip, bzip2
+
+- tar - Standard for backups, stand for Tape Archiver. Standard tool for extracting an making back-ups ( older utility cpio). Tar does not compress at default
+
+Using tar:
+
+```shell
+//making an archive c for create, v for verbose, f for file and /directory for contents of archive file
+$tar cvf archivefilename.tar /directory
+
+//look at contents of tar file
+$tar tvf archivefilename
+
+//extract tar archive
+$tar xvf archivefilename.tar -C /directory
+
+//using compressing using option -z wich is gzip or option -j which is bzip2
+$tar czvg /tmp/homes.tar /home /root
+
+//extract to directory using option -C
+$tar xvf archivefile.tar -C /tmp
+```
+
+Compression:
+
+Note extension do have meaning here
+
+```shell
+//compress using gzip
+$gzip filename
+
+//compress using bzip
+$bzip filename
+
+//uncrompress/extract using gzip or bzip
+$gunzip filename.gz
+$bunzip2 filname.bz2
+```
+
+Links:
+
+Linux nows 2 kind of links to files
+
+- symbolic link ( soft link )
+- hard link
+
+Symbolic links: is a reference to the name of the file. All administration is done on the source file. So you cant set permissions on symbolic links and if the original file gets lost the link will break.
+Very flexible u can use them to reference files o directorys even if these are on a different device or server.
+
+Using Symbolic:
+
+```shell
+//making a symbolic link i.e.
+in your home directory link to file /etc/host link is called computers
+$ln -s /etc/hosts ~/computers
+```
+
+Hard links: every file on linux has his whole administration saved in the inode($ls -i) of that file. In the invode ther is information about permissions, times, owners and alot more. Trough the inode the shell can access blocks in which the file is saved. Only thing not saved in the inode is the name of the file. Filenames are saved in a different table ( the directorytable ). Each name has a inode linked to it, but the inode does not know which names these are, the only thing known in the inode is the count of names that are linked to the inode. Every name in it self is a Hard link. By working with hard links its possible to link various names to a inode. Special is that there is no difference between the first en each following name that is linked to the inode.
+If the source file is deleted has no effect on hard links that ar created later.
+Restrictions:
+
+- works only for files on the same parition or logical volume
+
+- cant make hard links to a directory
+
+Using/Making hard links:
+
+```shell
+//create hard link computer from myfile
+$ln myfile computer
+
+//show that they are the same
+$ln -il mijnhosts computers
+
+//Note if you do this both will be updated since its the same file to which 2 different names are linked
+$echo hallo >> mijnhosts
+```
+
+The linux filesystem:
+
+- FHS - is one of the standard for linux aka as Filesystem Hieraarchy Standard, this sets the directorys and for which purpose these should be used. Want to know more use command $man hier
+
+The most importand directorys and their functions as defined in the FHS:
+
+- / - the rootdirectory, the starting point of the whole directory tree.
+
+- /bin - this directory has binaries ( program files  ) which are necessary when linux is started in minimal mode ( single user mode ), so if necessary the system can be repaired. On modern distributions mostly this is a symbolic link to /usr/bin.
+
+- /sbin - the systembinaries, program files a administrator needs to repair a linux system which has problems. On mondern distributions mostly this is a symblock link to /usr/sbin.
+
+- /usr - the directory where all progam files and services are in. Often this is on a different partition and thas why sometimes in single user mode is not accessible. Under this u will find a couple of directorys which also are under / i.e. bin and sbin.
+
+- /lib - contains library-files. These are files that have a shared code which are necessary/used by the binaries in /bin and /sbin.
+
+- /boot - contains the kernal and related files which are necessary to start a linux-system.
+
+- /etc - here you will find configuration files of which programs and services on your computer make use of. Almost al the files are readable text files.
+
+- /dev - contains the device files. These are files that are used as interface to hardwarecomponents in your computer. Most of these files are automatically made by the service udev.
+
+- /home - contains home directorys of users. This directory is ofter on a different partition.
+
+- /media - used as mount point for devices that are automatically mounted i.e. cd's and usb-sticks.
+
+- /run - a relativtly new addition to the FHS, that is used to save files which are dynamically created for a specific users and processes.
+
+- /mnt - often used as temporary mount point. Some administrators use this to make different sub directorys so that different types of mounts can be reaced trough /mnt.
+
+- /opt - directory in which additional program files are place. Often these are what more bigger program suites. Most distributions dont use this directory.
+
+- /proc - the mount point for the proc-filesystem which is used as interface to the kernel.
+
+- /root - the home directory of the user root.
+
+- /srv - used to save data by different services available on the system. Think of files which are presented by aweb-ftp server as shared files. Not all distributions use this
+
+- /tmp - contains temporary files which are dynamically created by different processes.
+
+- /var - contains different files which are dynamiccaly created by the os and services. Because this files can grow uncontrolled, this is often on a different partition or volume.
+
+Working with locate, whereis and related utilities:
+
+Searching files: search for files can be done with the command $find.
+To search for files faster a database can created wherein all relavant program files are index. This database is made with the command $updatedb and in the configuration file /etc/updatedb.conf u can provide the directories as admin. If the db exists u can use the commmand $locate to find files.
+Down side to this, the db gets automatically updated once per day, so files made couple of hours ago cant be found.
+
+```shell
+//locate file indexed by db
+$locate myfile
+
+//create db and index
+$updatedb
+
+//create/update and index in backgroud
+$updatedb &
+```
+
+Using which and whereis:
+
+searches the PATH-variables on your system, with which only the searchpath for programfiles are searched with whereis you will get more results because also the searchpath ot the man pages and other sources of the documentation are search.
+
+Using find:
+
+```shell
+//find all files on the system where name begins with hosts saved on the hard drive
+$find / -name "hosts*"
+
+//combined options i.e find all files of which linda is the owner and are bigger then 100mb
+$find / -user linda -size +100M
+
+//also possbile to execute command on resulsts i.e. find all files of which anita is the owner and move these to the directory /root by using -exec.
+note exec need always be closed by \;
+{} is used to reference the result of find
+$find / -user anita -exec mv {} /root \;
+
+//find all files with owner linda and filter these to look if ther alre files in which the text blah exists
+$find / -user linda -exec grep -l blah {} \;
+
+
+//usefull options
+-executable: finds al executables files
+-group groupname: finds all files where groupname is the owner
+-mmin n: shows all files that are changed n minutes ago
+-newer file: finds all files that are newer then file
+-nogroup, nouser: search files which have no group or user as owner
+-perm[+|-] modues: search all files where a specific permissionsmode is set
+-size n: searches all files with a specific size, can be used to specify size i.e. +2G searches all files bigger dan 2 gigabytes also possible to use K or M.
+-type t: finds files of a specific type i.e. use f for file or d for directorys.
+```
