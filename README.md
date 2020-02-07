@@ -1,4 +1,4 @@
-# Linux
+# Working on the shell
 
 Virtual consoles aka tty:
 
@@ -47,10 +47,10 @@ $systemctl isolate graphical.target
 Set default interface:
 
 ```shell
-//For GUI
+#For GUI
 $systemctl set-default graphical.target
 
-//CLI
+#CLI
 $systemctl set-default multi-user.target
 ```
 
@@ -59,7 +59,7 @@ Open sub/new shell (Parent-child):
 ```shell
 $bash
 
-//set shell behaviour see "help set"
+#set shell behaviour see "help set"
 $help set
 $set
 
@@ -68,16 +68,16 @@ $set
 Run script:
 
 ```shell
-//In current shell
+#In current shell
 $.[scriptname.ext]
-or
+#or
 $source [scriptname.ext]
 
-//In subshell after execution returns
+#In subshell after execution returns
 to Parent shell
 $bash [scriptname.ext]
 
-//In specific situation run from memory
+#In specific situation run from memory
 $exec [scriptname.ext]
 ```
 
@@ -86,25 +86,25 @@ Filter:
 ```shell
 $grep
 
-//pause output
+#pipe output to less
 $ls | less
 ```
 
 Directory browsing:
 
 ```shell
-//Show files in directory
+#Show files in directory
 $ls
 README.md
 
-//Show directory your in
+#Show directory your in
 $pwd
 /home/wickedPy/Development/Linux
 
-//make directory/file
+#make directory/file
 $mkdir /foldername
 
-//remove directory/file
+#remove directory/file
 $rm -r /foldername
 ```
 
@@ -120,10 +120,10 @@ Show information on computer:
 $uname
 Linux
 
-//show all
+#show all
 $uname -a
 
-//show versionno. current kernel
+#show versionno. current kernel
 $uname -r
 ```
 
@@ -134,10 +134,10 @@ The shell saves typed commands in a file called ***.bash_history***
 Access history:
 
 ```shell
-//Show history
+#Show history
 $history
 
-//Clear history
+#Clear history
 $history -c
 ```
 
@@ -161,7 +161,7 @@ uname -r
 4.18.0-18-generic
 ```
 
-! note extension do not play a role in Linux
+note extensions mostly do not play a role in Linux
 
 ## User Accounts
 
@@ -205,7 +205,7 @@ Read variable:
 ```shell
 $echo $[variable]
 
-i.e.
+#i.e.
 $echo $PATH
 ```
 
@@ -214,18 +214,21 @@ Create variable:
 ```shell
 $[VARIABLENAME] = [value]
 
-i.e.
+#i.e.
 $TODAY=monday
+```
+Call variable:
+
+```shell
+$ $PATH
+$ echo $PATH
 ```
 
 Set variable to no value:
 
 ```shell
-//using unset
+#using unset
 $unset TODAY
-
-//using variable
-$TODAY=
 ```
 
 Self set variables are not automatically available
@@ -234,7 +237,7 @@ in subshells, to make it available in a subshell use:
 ```shell
 $export [VARIABLENAME] = [value]
 
-i.e.
+#i.e.
 $export TODAY = monday
 ```
 
@@ -249,31 +252,31 @@ $export TODAY = monday
 U can send the STDIN, STDOUT and STDERR somewhere else aka ***redirect***:
 
 ```shell
-//redirect STDIN i.e. use contents of file as input of a command
+#redirect STDIN i.e. use contents of file as input of a command
 $ <
 
-//redirect STDOUT i.e. send output of command to file.
-//The use of a single > creates a new file or overwrites it.
+#redirect STDOUT i.e. send output of command to file.
+#The use of a single > creates a new file or overwrites it.
 $ >
-//Use >> to add to file
+#Use >> to add to file
 $ >>
 
-//i.e. write output and errors to file wickedtest
+#i.e. write output and errors to file wickedtest
 $grep root /etc/* > ~/wickedtest
 
-//redirect STDERR i.e. send error output to file
+#redirect STDERR i.e. send error output to file
 $ 2>
 
-//i.e. search for root in /etc/* and send all errors to null device shows only STDOUT
+#i.e. search for root in /etc/* and send all errors to null device shows only STDOUT
 $grep root /etc/* 2> /dev/null
 
-//i.e. search for root in /etc/* and send all errors to a file wickedtest and show only STDOUT
+#i.e. search for root in /etc/* and send all errors to a file wickedtest and show only STDOUT
 $grep root /etc/* 2> ~/wickedtest
 
-//i.e. search for root in /etc/* and send all errors to null device and send output STDOUT to file
+#i.e. search for root in /etc/* and send all errors to null device and send output STDOUT to file
 $grep root /etc/* 2> /dev/null > ~/wickedtest
 
-//Use 2>&1 to tell that STDERR must be used just like STDOUT
+3Use 2>&1 to tell that STDERR must be used just like STDOUT
 ```
 
 Pipes:
@@ -283,10 +286,10 @@ Use pipe to send the ouput of the first command to the input of the second comma
 ```shell
 $ls /etc/ | grep hosts
 
-//use row for row from ouput as command for second input
+#use row for row from ouput as command for second input
 $ls /etc/ | xargs grep hosts
 
-//or split output i.e. write to file
+#or split output i.e. write to file
 and filter
 $ls /etc/ | tee ~/file | grep host
 ```
